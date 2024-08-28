@@ -17,6 +17,7 @@ function Board() {
   const handleCoinFlip = (firstPlayer) => {
     setIsXNext(firstPlayer === "X");
     setGameStarted(true);
+    
   };
 
   const handleClick = (index) => {
