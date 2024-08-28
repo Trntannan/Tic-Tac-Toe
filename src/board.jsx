@@ -1,39 +1,102 @@
-// contains the logic for managing the game state,
-// including:
-// Handling clicks on squares (handleClick).
-// Managing which player's turn it is (isXNext).
-// Checking if there is a winner using the calculateWinner function.
-// Updating the squares array that represents the current state of the board.
-
 import React, { useState } from 'react';
 import Square from './square';
 import calculateWinner from './calculateWin';
+import CoinFlip from './coinFlip';
+import CannotWin from './cannotWin'; 
 import './App.css';
 
 function Board() {
-  const [squares, setSquares] = useState(Array(9).fill(null));//An array of 9 null spaces (squares)
-  const [isXNext, setIsXNext] = useState(true);//A boolean indicating whose turn it is ( isXNext)
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [isXNext, setIsXNext] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [xWins, setXWins] = useState(0);
+  const [oWins, setOWins] = useState(0);
+  const [winningLine, setWinningLine] = useState([]);
+  const [showWinCounters, setShowWinCounters] = useState(false);
 
-  const handleClick = (index) => {
-    if (squares[index] || calculateWinner(squares)) return;//if the square is filled or there is a winner, return
-
-    const newSquares = squares.slice();//create a copy of the squares array
-    newSquares[index] = isXNext ? 'X' : 'O';//set the value of the square based on whose turn it is
-    setSquares(newSquares);//update the squares array
-    setIsXNext(!isXNext);//toggle whose turn it is
+  const handleCoinFlip = (firstPlayer) => {
+    setIsXNext(firstPlayer === "X");
+    setGameStarted(true);
   };
 
-  const winner = calculateWinner(squares);//if there is a winner, return the winner
-  const status = winner ? `Winner: ${winner}` : `Next player: ${isXNext ? 'X' : 'O'}`;//set the status message based on the winner or whose turn it is
+  const handleClick = (index) => {
+    if (gameStarted && !board[index] && !calculateWinner(board).winner) {
+      const newBoard = [...board];
+      const currentMarker = isXNext ? "X" : "O";
+      newBoard[index] = currentMarker;
+      setBoard(newBoard);
+      setIsXNext(!isXNext);
+
+      const winner = calculateWinner(newBoard).winner;
+      if (winner) {
+        setWinningLine(calculateWinner(newBoard).line);
+        if (winner === "X") {
+          setXWins((prevXWins) => prevXWins + 1);
+        } else {
+          setOWins((prevOWins) => prevOWins + 1);
+        }
+      }
+    }
+  };
+
+  const restartGame = () => {
+    setBoard(Array(9).fill(null));
+    setIsXNext(true);
+    setGameStarted(false);
+    setWinningLine([]);
+    setShowWinCounters(false);
+  };
+
+  const playAgain = () => {
+    setBoard(Array(9).fill(null));
+    setIsXNext(true);
+    setWinningLine([]);
+    setShowWinCounters(true);
+  };
+
+  const result = calculateWinner(board);
+  const winner = result.winner;
+  const status = winner
+    ? `${winner} Wins!`
+    : `Next player: ${isXNext ? "X" : "O"}`;
 
   return (
     <>
-      <div className="status">{status}</div>
-      <div className="board">
-        {squares.map((square, index) => (
-          <Square key={index} value={square} onClick={() => handleClick(index)} />
-        ))}
-      </div>
+      <h1>Tic Tac Toe</h1>
+      {showWinCounters && (
+        <div className="win-count">
+          <p>X Wins: {xWins}</p>
+          <p>O Wins: {oWins}</p>
+        </div>
+      )}
+      {!gameStarted && <CoinFlip onFlip={handleCoinFlip} />}
+      {gameStarted && (
+        <>
+          <div className="status">{status}</div>
+          <CannotWin squares={board} />
+          <div className="board">
+            {board.map((square, index) => (
+              <Square
+                key={index}
+                value={square}
+                onClick={() => handleClick(index)}
+                highlight={winningLine.includes(index)}
+              />
+            ))}
+          </div>
+          {winner && (
+            <>
+              <div className="result">
+                <p>{winner} Wins!</p>
+              </div>
+              <div className="buttons">
+                <button onClick={restartGame}>Restart</button>
+                <button onClick={playAgain}>Play Again</button>
+              </div>
+            </>
+          )}
+        </>
+      )}
     </>
   );
 }

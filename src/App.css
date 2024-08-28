@@ -1,42 +1,172 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
+  --primary-color: #4db6ac; 
+  --secondary-color: #00796b; 
+  --background-color: #e0f7fa; 
+  --text-color: #004d40; 
+  --highlight-color: #ff6f61; 
+  --result-color: #ff5722; 
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; 
+  margin-top: 80px; 
+}
+
+h1 {
+  position: fixed; 
+  top: 10px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  background-color: var(--background-color);
+  padding: 10px; 
+  border-radius: 5px; 
+  z-index: 700; 
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--primary-color); 
+}
+
+.status {
+  font-size: 24px;
+  margin: 10px 0 40px 0;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 110px); 
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  background-color: var(--background-color);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.square {
+  width: 110px;
+  height: 110px;
+  background-color: var(--primary-color);
+  color: white;
+  border: 1px solid var(--secondary-color);
+  font-size: 36px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+  
+
+.square:hover {
+  background-color: var(--secondary-color);
+}
+
+.square.highlight {
+  background-color: var(--highlight-color);
+}
+
+.result {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--result-color);
+  margin-bottom: 20px;
+}
+
+.buttons {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.buttons button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: #ffffff; 
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.buttons button:hover {
+  background-color: var(--secondary-color);
+}
+
+.win-count {
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.coin-flip {
+  margin-bottom: 20px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.coin {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  perspective: 1000px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.coin-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 2rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.coin-face.front {
+  background-color: var(--primary-color);
 }
 
-.card {
-  padding: 2em;
+.coin-face.back {
+  background-color: var(--secondary-color);
+  transform: rotateY(180deg);
 }
 
-.read-the-docs {
-  color: #888;
+.coin.flipping {
+  animation: flipCoin 1s ease-in-out forwards;
+}
+
+@keyframes flipCoin {
+  0% { transform: rotateY(0); }
+  100% { transform: rotateY(1800deg); } 
+}
+
+.coin-flip button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.coin-flip button:disabled {
+  background-color: var(--secondary-color);
+  cursor: not-allowed;
 }
